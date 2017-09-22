@@ -1,4 +1,4 @@
-"""People App Main module."""
+"""BITStore App Main module."""
 
 import jinja2
 import os

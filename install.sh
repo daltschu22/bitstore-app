@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+GID=$( id -g )
 
 TTY=
 if [ "${TERM}" != 'dumb' ] ; then
@@ -9,5 +11,10 @@ fi
 git submodule update --init --recursive
 
 # install python requirements into lib/
-docker run ${TTY} --rm -v "$(pwd)":/usr/src -w /usr/src python:2.7 \
-  pip install -t lib/ -r requirements.txt --upgrade
+sudo docker run ${TTY} --rm \
+    -v "$(pwd)":/usr/src \
+    -w /usr/src \
+    python:2.7 bash -c \
+        "pip install -t lib/ -r requirements.txt --upgrade && \
+        find lib/ -type d -print0 | xargs -0 chmod 0755; \
+        find lib/ -print0 | xargs -0 chown -h ${EUID}:${GID}"

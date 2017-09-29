@@ -23,5 +23,5 @@ docker run -it --rm \
       --port 8080 \
       --skip_sdk_update_check=True \
       --use_mtime_file_watcher true \
-      app.yaml worker.yaml
+      app.yaml
       # --clear_datastore

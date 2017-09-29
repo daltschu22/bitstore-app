@@ -21,6 +21,10 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
+- url: /broadlogo\.png
+  static_files: broadlogo.png
+  upload: broadlogo\.png
+
 - url: /admin
   script: main.app
   login: admin

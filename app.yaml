@@ -2,19 +2,6 @@ runtime: python27
 api_version: 1
 threadsafe: true
 
-#[START_EXCLUDE]
-skip_files:
-- ^(.*/)?.*/RCS/.*$
-- ^(.*/)?.*\.p(12|em)$
-- ^(.*/)?.*\.py[co]$
-- ^(.*/)?.*\.sh$
-- ^(.*/)?.*~$
-- ^(.*/)?\..*$
-- ^(.*/)?#.*#$
-- ^(.*/)?setuptools/script \(dev\).tmpl$
-- ^gcloud(.*)config
-#[END_EXCLUDE]
-
 # [START handlers]
 handlers:
 - url: /favicon\.ico

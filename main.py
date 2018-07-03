@@ -6,11 +6,18 @@ import webapp2
 
 from google.appengine.api import users
 
+from bitsdb.client import BITSdb
+
 jinja = jinja2.Environment(
     loader=jinja2.FileSystemLoader('templates'),
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
 
+PARAMS = {
+    'api_key': 'AIzaSyAOvXcdqHE3ebDRbsIkhbwvaW7N-GKMREA',
+    # 'base_url': 'http://karlsson.c.broad-karlsson.internal:8081/_ah/api',
+    # 'debug': True,
+}
 
 def is_dev():
     """Return true if this is the development environment."""
@@ -50,8 +57,10 @@ class MainPage(webapp2.RequestHandler):
 
     def get(self):
         """Return the main page."""
+        b = BITSdb(**PARAMS)
+        filesystems = b.get_filesystems()
         template_values = {
-
+            'filesystems': filesystems,
         }
         template = jinja.get_template('index.html')
         body = template.render(template_values)

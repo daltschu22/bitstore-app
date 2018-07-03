@@ -1,6 +1,7 @@
 """BITStore App Main module."""
 
 import jinja2
+import json
 import os
 import webapp2
 
@@ -59,6 +60,7 @@ class MainPage(webapp2.RequestHandler):
         """Return the main page."""
         b = BITSdb(**PARAMS)
         filesystems = b.get_filesystems()
+        print json.dumps(filesystems, indent=2, sort_keys=True)
         template_values = {
             'filesystems': filesystems,
         }

@@ -1,17 +1,19 @@
+<h2>Welcome</h2>
 
-<table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+<table class="table">
     <thead>
         <tr>
-            <th class="mdl-data-table__cell--non-numeric">Filesystem</th>
-            <th class="mdl-data-table__cell--non-numeric">Mount Path</th>
+            <th scope="col">Filesystem</th>
+            <th scope="col">Mount Path</th>
         </tr>
     </thead>
     <tbody>
-    {% for f in filesystems %}
+        {% for f in filesystems %}
         <tr>
-            <td class="mdl-data-table__cell--non-numeric">{{ f.id }}</td>
-            <td class="mdl-data-table__cell--non-numeric">{{ f.mountpoints[0].mountpoint }}</td>
+            <td>{{ f.id }}</td>
+            <td>{{f.mountpoints[0].mountpoint }}</td>
         </tr>
-    {% endfor %}
+
+        {% endfor %}
     </tbody>
 </table>

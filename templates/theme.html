@@ -1,68 +1,63 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="BITStore Web Application">
-    <meta name="author" content="Lukas Karlsson <karlsson@broadinstitute.org>">
-    <link rel="icon" href="../../favicon.ico">
-    <title>Broad BITStore App</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-    <script defer src="https://use.fontawesome.com/97ca6f9e25.js"></script>
-    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-  </head>
-  <body>
-    <!-- MDL Layout -->
-    <div class="mdl-layout mdl-js-layout">
 
-      <!-- MDL Header -->
-      <header class="mdl-layout__header mdl-layout__header--scroll">
-        <div class="mdl-layout__header-row">
-          <!-- Title -->
-          <span class="mdl-layout-title">BITStore 2.0</span>
-          <!-- Add spacer, to align navigation to the right -->
-          <div class="mdl-layout-spacer"></div>
-          <!-- Navigation -->
-          <nav class="mdl-navigation">
-            <a class="mdl-navigation__link" href="/">Home</a>
-            {% if is_admin %}<a class="mdl-navigation__link" href="/admin">Admin</a>{% endif %}
-          </nav>
-        </div>
-      </header>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="/favicon.ico">
 
-      <!-- MDL Drawyer -->
-      <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">BITStore 2.0</span>
-        <nav class="mdl-navigation">
-          <a class="mdl-navigation__link" href="/">Home</a>
-          {% if is_admin %}<a class="mdl-navigation__link" href="/admin">Admin</a>{% endif %}
-        </nav>
-      </div>
+  <title>BITStore 2.0</title>
 
-      <!-- MDL Content -->
-      <main class="mdl-layout__content">
-        <div class="page-content">
-          <div class="mdl-grid">
-            {{ body|safe }}
-          </div>
-        </div>
-      </main>
+  <!-- Bootstrap core CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+  crossorigin="anonymous">
 
-      <!-- MDL Footer -->
-      <footer class="mdl-mega-footer">
-        <div class="mdl-mega-footer__bottom-section">
-          <div class="mdl-logo">BITStore 2.0</div>
-          <ul class="mdl-mega-footer__link-list">
-            <li><a href="#">Help</a></li>
-            <li><a href="#">Privacy &amp; Terms</a></li>
-          </ul>
-        </div>
-      </footer>
+  <!-- Custom styles for this template -->
+  <link href="/styles.css" rel="stylesheet">
+</head>
 
+<body>
+
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+    <a class="navbar-brand" href="/">BITStore 2.0</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Disabled</a>
+        </li>
+      </ul>
+      <form class="form-inline mt-2 mt-md-0">
+        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
     </div>
+  </nav>
 
-  </body>
+  <main role="main" class="container">
+   {{ body|safe }}
+  </main>
+
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+</body>
 
 </html>

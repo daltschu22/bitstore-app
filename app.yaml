@@ -8,9 +8,9 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
-- url: /broadlogo\.png
-  static_files: broadlogo.png
-  upload: broadlogo\.png
+- url: /styles\.css
+  static_files: styles.css
+  upload: styles\.css
 
 - url: /admin
   script: main.app

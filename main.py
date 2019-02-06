@@ -54,6 +54,25 @@ class AdminPage(webapp2.RequestHandler):
         self.response.write(output)
 
 
+class FilesystemPage(webapp2.RequestHandler):
+    """Class for FilesystemPage."""
+
+    def get(self, filesystem_id):
+        """Return the filesystem page."""
+        b = BITStore(**PARAMS)
+        filesystem = b.get_filesystem(filesystem_id)
+        template_values = {
+            'json': json.dumps(filesystem, indent=2, sort_keys=True),
+            'filesystem': filesystem,
+            'fs': filesystem['fs'],
+
+        }
+        template = jinja.get_template('filesystem.html')
+        body = template.render(template_values)
+        output = render_theme(body, self.request)
+        self.response.write(output)
+
+
 class MainPage(webapp2.RequestHandler):
     """Class for MainPage."""
 
@@ -61,7 +80,6 @@ class MainPage(webapp2.RequestHandler):
         """Return the main page."""
         b = BITStore(**PARAMS)
         filesystems = b.get_filesystems()
-        print(json.dumps(filesystems, indent=2, sort_keys=True))
         template_values = {
             'filesystems': filesystems,
         }
@@ -74,4 +92,5 @@ class MainPage(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/admin', AdminPage),
+    (r'/filesystems/(\d+)', FilesystemPage)
 ], debug=True)

@@ -10,7 +10,7 @@
     <tbody>
         {% for f in filesystems|sort(attribute='fs') %}
         <tr>
-            <td>{{ f.fs }}</td>
+            <td><a href="/filesystems/{{ f.id }}">{{ f.fs }}</a></td>
             <td>{% if f.mountpoints %}{{f.mountpoints[0].mountpoint }}{% endif %}</td>
         </tr>
 

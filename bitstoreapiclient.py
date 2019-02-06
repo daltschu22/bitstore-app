@@ -87,7 +87,7 @@ class BITStore(object):
         )
 
         # create the service connection to bitsdb
-        self.bitsdb = build(
+        self.bitstore = build(
             api,
             api_version,
             developerKey=api_key,
@@ -264,6 +264,10 @@ class BITStore(object):
         if filesystems is not None:
             return filesystems
         params = {'limit': 1000}
-        filesystems = self.get_paged_list(self.bitsdb.filesystems(), params)
+        filesystems = self.get_paged_list(self.bitstore.filesystems(), params)
         self.save_memcache_group('filesystems', filesystems, 'server')
         return filesystems
+
+    def get_filesystem(self, filesystem_id):
+        """Return a single filesystem."""
+        return self.bitstore.filesystems().get(id=filesystem_id).execute()

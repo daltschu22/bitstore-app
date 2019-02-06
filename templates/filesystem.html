@@ -1,0 +1,60 @@
+<h2>Filesystem: {{ fs }}</h2>
+
+<table class="table">
+    <tbody>
+        <tr>
+            <th>ID</th>
+            <TD>{{ filesystem.id }}</TD>
+        </tr>
+        <tr>
+            <th>Filesystem</th>
+            <td>{{ filesystem.fs }}</td>
+        </tr>
+        <tr>
+            <th>Storage Type</th>
+            <td>{{ filesystem.storage_type }}</td>
+        </tr>
+        <tr>
+            <th>Server</th>
+            <td>{{ filesystem.server }}</td>
+        </tr>
+        <tr>
+            <th>Path</th>
+            <td>{{ filesystem.path }}</td>
+        </tr>
+        <tr>
+            <th>Mountpoints</th>
+            <td>
+                {%- if not filesystem.mountpoints %}NONE{%- else -%}
+                {%- for mountpoint in filesystem.mountpoints %}
+                {{ mountpoint.mountpoint }}
+                    {% if mountpoint.path != filesystem.path %}
+                    [{{ mountpoint.path}}]
+                    {% endif %}
+                    {% if mountpoint.options %}
+                    ({{ mountpoint.options}})
+                    {% endif %}
+                {% endfor -%}
+                {%- endif -%}
+            </td>
+        </tr>
+        {% if filesystem.storage_type == 'isilon' -%}
+        <tr>
+            <th>Isilon Quota ID</th>
+            <td>{{ filesystem.quota_id }}</td>
+        </tr>
+        {%- endif %}
+        <tr>
+            <th>Active?</th>
+            <td>{% if filesystem.active %}TRUE{% else %}FALSE{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Disk Backup?</th>
+            <td>{% if filesystem.diskbackup %}TRUE{% else %}FALSE{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Raw JSON</th>
+            <td><pre>{{ json }}</pre></td>
+        </tr>
+    </tbody>
+</table>

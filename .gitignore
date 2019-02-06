@@ -103,3 +103,4 @@ ENV/
 *.p12
 *.pem
 tmp/
+core

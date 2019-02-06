@@ -8,10 +8,10 @@
         </tr>
     </thead>
     <tbody>
-        {% for f in filesystems %}
+        {% for f in filesystems|sort(attribute='fs') %}
         <tr>
-            <td>{{ f.id }}</td>
-            <td>{{f.mountpoints[0].mountpoint }}</td>
+            <td>{{ f.fs }}</td>
+            <td>{% if f.mountpoints %}{{f.mountpoints[0].mountpoint }}{% endif %}</td>
         </tr>
 
         {% endfor %}

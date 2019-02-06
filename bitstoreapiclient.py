@@ -35,7 +35,7 @@ class BITStore(object):
 
     def __init__(
         self,
-        api='bitsdb',
+        api='bitstore',
         api_version='v1',
         api_key=None,
         base_url='https://broad-bitstore-api.appspot.com/_ah/api',

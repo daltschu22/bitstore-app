@@ -15,7 +15,7 @@ jinja = jinja2.Environment(
     autoescape=True)
 
 PARAMS = {
-    'api_key': 'AIzaSyAOvXcdqHE3ebDRbsIkhbwvaW7N-GKMREA',
+    'api_key': 'AIzaSyDzRhwd2xw77iyyp0acSEB3yNgNhdntAV0',
     # 'base_url': 'http://karlsson.c.broad-karlsson.internal:8081/_ah/api',
     # 'debug': True,
 }

@@ -7,7 +7,7 @@ import webapp2
 
 from google.appengine.api import users
 
-from bitstoreapi import BITStore
+from bitstoreapiclient import BITStore
 
 jinja = jinja2.Environment(
     loader=jinja2.FileSystemLoader('templates'),

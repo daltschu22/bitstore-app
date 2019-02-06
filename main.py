@@ -7,7 +7,7 @@ import webapp2
 
 from google.appengine.api import users
 
-from bitsdb.client import BITSdb
+from bitstoreapi import BITStore
 
 jinja = jinja2.Environment(
     loader=jinja2.FileSystemLoader('templates'),
@@ -19,6 +19,7 @@ PARAMS = {
     # 'base_url': 'http://karlsson.c.broad-karlsson.internal:8081/_ah/api',
     # 'debug': True,
 }
+
 
 def is_dev():
     """Return true if this is the development environment."""
@@ -58,9 +59,9 @@ class MainPage(webapp2.RequestHandler):
 
     def get(self):
         """Return the main page."""
-        b = BITSdb(**PARAMS)
+        b = BITStore(**PARAMS)
         filesystems = b.get_filesystems()
-        print json.dumps(filesystems, indent=2, sort_keys=True)
+        print(json.dumps(filesystems, indent=2, sort_keys=True))
         template_values = {
             'filesystems': filesystems,
         }

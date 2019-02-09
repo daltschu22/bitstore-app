@@ -2,66 +2,119 @@
 
 &nbsp;
 
-<form class="container">
-
-    <div class="form-group row"><h4>BITStore Info</h4></div>
+<form action="/filesystems/{{ filesystem.id }}/edit" class="container" method="POST">
 
     <div class="form-group row">
-        <label for="id" class="col-sm-2 col-form-label"><b>Filesystem ID</b></label>
+        <h4>BITStore Info</h4>
+    </div>
+
+    <div class="form-group row">
+        <label for="id" class="col-sm-2 col-form-label">Filesystem ID</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" id="id" value="{{ filesystem.id }}" readonly>
         </div>
     </div>
 
     <div class="form-group row">
-        <label for="active" class="col-sm-2 col-form-label"><b>Active</b></label>
+        <label for="active" class="col-sm-2 col-form-label">Active</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" id="active" value="{{ filesystem.active }}" readonly>
         </div>
     </div>
 
     <div class="form-group row">
-        <label for="storage_type" class="col-sm-2 col-form-label"><b>Storage Type</b></label>
+        <label for="storage_type" class="col-sm-2 col-form-label">Storage Type</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" id="storage_type" value="{{ filesystem.storage_type }}" readonly>
         </div>
     </div>
 
+    <div class="form-group row"></div>
+
     <div class="form-group row">
-        <label for="quote" class="col-sm-2 col-form-label"><b>Quote</b></label>
+        <h4>Billing Info</h4>
+    </div>
+
+    <div class="form-group row">
+        <label for="storage_class_id" class="col-sm-2 col-form-label">Storage Class</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" id="quote" value="{{ filesystem.quote }}" readonly>
+        <select class="custom-select" name="storage_class_id"{% if not edit %} disabled{% endif %}>
+            <option value="">--- Select a Storage Class ---</option>
+            {% for storageclass in storageclasses %}
+            <option value="{{ storageclass.id }}"{% if storageclass.id == filesystem.storage_class_id %} selected{% endif %}>{{ storageclass.name }} ({{ storageclass.code }})</option>
+            {% endfor %}
+        </select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="quote" class="col-sm-2 col-form-label">Quote</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="quote" name="quote" value="{{ filesystem.quote }}" {% if not edit %}readonly{% endif %}>
         </div>
     </div>
 
     <div class="form-group row"></div>
 
-    {% if filesystem.storage_type == 'isilon' %}
-    <div class="form-group row"><h4>Isilon Info</h4></div>
+    <div class="form-group row">
+        <h4>Contact Info</h4>
+    </div>
 
     <div class="form-group row">
-        <label for="quota_id" class="col-sm-2 col-form-label"><b>Isilon Quota ID</b></label>
+        <label for="bits_contact" class="col-sm-2 col-form-label">BITS Contact</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="bits_contact" name="bits_contact"
+                value="{{ filesystem.bits_contact }}" {% if not edit %}readonly{% endif %}>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="primary_contact" class="col-sm-2 col-form-label">Primary Contact</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="primary_contact" name="primary_contact"
+                value="{{ filesystem.primary_contact }}" {% if not edit %}readonly{% endif %}>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="secondary_contact" class="col-sm-2 col-form-label">Secondary Contact</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="secondary_contact" name="secondary_contact"
+                value="{{ filesystem.secondary_contact }}" {% if not edit %}readonly{% endif %}>
+        </div>
+    </div>
+
+
+    <div class="form-group row"></div>
+
+    {% if filesystem.storage_type == 'isilon' %}
+    <div class="form-group row">
+        <h4>Isilon Info</h4>
+    </div>
+
+    <div class="form-group row">
+        <label for="quota_id" class="col-sm-2 col-form-label">Isilon Quota ID</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" id="quota_id" value="{{ filesystem.quota_id }}" readonly>
         </div>
     </div>
 
     <div class="form-group row">
-        <label for="server" class="col-sm-2 col-form-label"><b>Server</b></label>
+        <label for="server" class="col-sm-2 col-form-label">Server</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" id="server" value="{{ filesystem.server }}" readonly>
         </div>
     </div>
 
     <div class="form-group row">
-        <label for="path" class="col-sm-2 col-form-label"><b>Path</b></label>
+        <label for="path" class="col-sm-2 col-form-label">Path</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" id="path" value="{{ filesystem.path }}" readonly>
         </div>
     </div>
 
     <div class="form-group row">
-        <label for="diskbackup" class="col-sm-2 col-form-label"><b>Disk Backup</b></label>
+        <label for="diskbackup" class="col-sm-2 col-form-label">Disk Backup</label>
         <div class="col-sm-10">
             <input type="text" class="form-control" id="diskbackup" value="{{ filesystem.diskbackup }}" readonly>
         </div>
@@ -71,25 +124,32 @@
     {% endif %}
 
     {% if filesystem.mountpoints %}
-
-    <div class="form-group row"><h4>NIS Automount Info</h4></div>
+    {% set rows = filesystem.mountpoints|length %}
+    <div class="form-group row"><h4>Automount Info</h4></div>
 
     <div class="form-group row">
-        <label for="mountpoints" class="col-sm-2 col-form-label"><b>Mountpoints</b></label>
+        <label for="mountpoints" class="col-sm-2 col-form-label">Mountpoints</label>
         <div class="col-sm-10">
-            <textarea class="form-control" id="mountpoints" readonly>
-{%- for mountpoint in filesystem.mountpoints -%}
-{{ mountpoint.mountpoint }} [{{ filesystem.server }}:{{ mountpoint.path }}] ({{ mountpoint.options }})
-{% endfor -%}
-            </textarea>
+            <table class="table">
+                <tr>
+                    <th>Mountpoint</th>
+                    <th>Server Path</th>
+                    <th>Options</th>
+                </tr>
+            {% for mountpoint in filesystem.mountpoints %}
+                <tr>
+                    <td>{{ mountpoint.mountpoint }}</td>
+                    <td>{{ filesystem.server }}:{{ mountpoint.path }}</td>
+                    <td>{{ mountpoint.options }}</td>
+                </tr>
+            {% endfor -%}
+            </table>
         </div>
     </div>
     {% endif %}
-
-    <div class="form-group row">
-        <label for="json" class="col-sm-2 col-form-label"><b>Raw JSON</b></label>
-        <div class="col-sm-10">
-            <pre>{{ json }}</pre>
-        </div>
-    </div>
+    {% if edit %}
+    <input class="btn btn-primary" type="submit" value="Save">
+    {% else %}
+    <a class="btn btn-primary" href="/filesystems/{{ filesystem.id }}/edit" role="button">Edit</a>
+    {% endif %}
 </form>

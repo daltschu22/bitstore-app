@@ -271,3 +271,13 @@ class BITStore(object):
     def get_filesystem(self, filesystem_id):
         """Return a single filesystem."""
         return self.bitstore.filesystems().get(id=filesystem_id).execute()
+
+    def get_storageclasses(self):
+        """Return a list of StorageClases from BITSdb."""
+        storageclasses = memcache.get('storageclasses')
+        if storageclasses is not None:
+            return storageclasses
+        params = {'limit': 1000}
+        storageclasses = self.get_paged_list(self.bitstore.storageclasses(), params)
+        memcache.add('storageclasses', storageclasses, self.memcache_time)
+        return storageclasses

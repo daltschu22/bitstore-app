@@ -54,6 +54,57 @@ class AdminPage(webapp2.RequestHandler):
         self.response.write(output)
 
 
+class FilesystemEditPage(webapp2.RequestHandler):
+    """Class for FilesystemEditPage."""
+
+    def get(self, filesystem_id):
+        """Return the filesystem edit page."""
+        b = BITStore(**PARAMS)
+        filesystem = b.get_filesystem(filesystem_id)
+        storageclasses = b.get_storageclasses()
+        template = jinja.get_template('filesystem.html')
+        body = template.render(
+            edit=True,
+            filesystem=filesystem,
+            fs=filesystem['fs'],
+            json=json.dumps(filesystem, indent=2, sort_keys=True),
+            storageclasses=sorted(storageclasses, key=lambda x: x['name']),
+        )
+        output = render_theme(body, self.request)
+        self.response.write(output)
+
+    def post(self, filesystem_id):
+        """Update a filesystem."""
+        b = BITStore(**PARAMS)
+        filesystem = b.get_filesystem(filesystem_id)
+        post_data = self.request.POST
+
+        # fields to potentially update
+        fields = [
+            'bits_contact',
+            'primary_contact',
+            'quote',
+            'secondary_contact',
+            'storage_class_id',
+        ]
+
+        # check post data for fields to update
+        update = False
+        for field in fields:
+            if field in post_data:
+                old = filesystem.get(field)
+                new = post_data.get(field)
+                if old != new:
+                    filesystem[field] = new
+                    update = True
+
+        if update:
+            response = b.bitstore.filesystems().insert(body=filesystem).execute()
+            print(response)
+
+        self.redirect('/filesystems/%s' % (filesystem_id))
+
+
 class FilesystemPage(webapp2.RequestHandler):
     """Class for FilesystemPage."""
 
@@ -61,14 +112,15 @@ class FilesystemPage(webapp2.RequestHandler):
         """Return the filesystem page."""
         b = BITStore(**PARAMS)
         filesystem = b.get_filesystem(filesystem_id)
-        template_values = {
-            'json': json.dumps(filesystem, indent=2, sort_keys=True),
-            'filesystem': filesystem,
-            'fs': filesystem['fs'],
-
-        }
+        storageclasses = b.get_storageclasses()
         template = jinja.get_template('filesystem.html')
-        body = template.render(template_values)
+        body = template.render(
+            edit=False,
+            filesystem=filesystem,
+            fs=filesystem['fs'],
+            json=json.dumps(filesystem, indent=2, sort_keys=True),
+            storageclasses=sorted(storageclasses, key=lambda x: x['name']),
+        )
         output = render_theme(body, self.request)
         self.response.write(output)
 
@@ -92,5 +144,6 @@ class MainPage(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/admin', AdminPage),
-    (r'/filesystems/(\d+)', FilesystemPage)
+    (r'/filesystems/(\d+)', FilesystemPage),
+    (r'/filesystems/(\d+)/edit', FilesystemEditPage),
 ], debug=True)

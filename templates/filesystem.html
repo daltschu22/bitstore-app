@@ -1,61 +1,95 @@
-<h2>Filesystem: {{ fs }}</h2>
+<h3>Filesystem: {{ fs }}</h3>
 
-<table class="table">
-    <tbody>
-        <tr>
-            <th>ID</th>
-            <TD>{{ filesystem.id }}</TD>
-        </tr>
-        <tr>
-            <th>Filesystem</th>
-            <td>{{ filesystem.fs }}</td>
-        </tr>
-        <tr>
-            <th>Storage Type</th>
-            <td>{{ filesystem.storage_type }}</td>
-        </tr>
-        <tr>
-            <th>Server</th>
-            <td>{{ filesystem.server }}</td>
-        </tr>
-        <tr>
-            <th>Path</th>
-            <td>{{ filesystem.path }}</td>
-        </tr>
-        <tr>
-            <th>Mountpoints</th>
-            <td>
-                {%- if not filesystem.mountpoints %}NONE{%- else -%}
-                {%- for mountpoint in filesystem.mountpoints %}
-                {{ mountpoint.mountpoint }}
-                    {% if mountpoint.path != filesystem.path %}
-                    [{{ mountpoint.path}}]
-                    {% endif %}
-                    {% if mountpoint.options %}
-                    ({{ mountpoint.options}})
-                    {% endif %}
-                    <br>
-                {% endfor -%}
-                {%- endif -%}
-            </td>
-        </tr>
-        {% if filesystem.storage_type == 'isilon' -%}
-        <tr>
-            <th>Isilon Quota ID</th>
-            <td>{{ filesystem.quota_id }}</td>
-        </tr>
-        {%- endif %}
-        <tr>
-            <th>Active?</th>
-            <td>{% if filesystem.active %}TRUE{% else %}FALSE{% endif %}</td>
-        </tr>
-        <tr>
-            <th>Disk Backup?</th>
-            <td>{% if filesystem.diskbackup %}TRUE{% else %}FALSE{% endif %}</td>
-        </tr>
-        <tr>
-            <th>Raw JSON</th>
-            <td><pre>{{ json }}</pre></td>
-        </tr>
-    </tbody>
-</table>
+&nbsp;
+
+<form class="container">
+
+    <div class="form-group row"><h4>BITStore Info</h4></div>
+
+    <div class="form-group row">
+        <label for="id" class="col-sm-2 col-form-label"><b>Filesystem ID</b></label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="id" value="{{ filesystem.id }}" readonly>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="active" class="col-sm-2 col-form-label"><b>Active</b></label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="active" value="{{ filesystem.active }}" readonly>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="storage_type" class="col-sm-2 col-form-label"><b>Storage Type</b></label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="storage_type" value="{{ filesystem.storage_type }}" readonly>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="quote" class="col-sm-2 col-form-label"><b>Quote</b></label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="quote" value="{{ filesystem.quote }}" readonly>
+        </div>
+    </div>
+
+    <div class="form-group row"></div>
+
+    {% if filesystem.storage_type == 'isilon' %}
+    <div class="form-group row"><h4>Isilon Info</h4></div>
+
+    <div class="form-group row">
+        <label for="quota_id" class="col-sm-2 col-form-label"><b>Isilon Quota ID</b></label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="quota_id" value="{{ filesystem.quota_id }}" readonly>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="server" class="col-sm-2 col-form-label"><b>Server</b></label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="server" value="{{ filesystem.server }}" readonly>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="path" class="col-sm-2 col-form-label"><b>Path</b></label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="path" value="{{ filesystem.path }}" readonly>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="diskbackup" class="col-sm-2 col-form-label"><b>Disk Backup</b></label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="diskbackup" value="{{ filesystem.diskbackup }}" readonly>
+        </div>
+    </div>
+
+    <div class="form-group row"></div>
+    {% endif %}
+
+    {% if filesystem.mountpoints %}
+
+    <div class="form-group row"><h4>NIS Automount Info</h4></div>
+
+    <div class="form-group row">
+        <label for="mountpoints" class="col-sm-2 col-form-label"><b>Mountpoints</b></label>
+        <div class="col-sm-10">
+            <textarea class="form-control" id="mountpoints" readonly>
+{%- for mountpoint in filesystem.mountpoints -%}
+{{ mountpoint.mountpoint }} [{{ filesystem.server }}:{{ mountpoint.path }}] ({{ mountpoint.options }})
+{% endfor -%}
+            </textarea>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="form-group row">
+        <label for="json" class="col-sm-2 col-form-label"><b>Raw JSON</b></label>
+        <div class="col-sm-10">
+            <pre>{{ json }}</pre>
+        </div>
+    </div>
+</form>

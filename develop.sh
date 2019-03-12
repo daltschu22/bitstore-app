@@ -1,6 +1,9 @@
 #!/bin/sh
 
-APP='broad-bitstore-app'
+APP="broad-bitstore-app"
+if [ $1 == 'dev' ]; then
+  APP="broad-bitstore-app-dev"
+fi
 
 sudo docker run -it --rm \
   -v /etc/localtime:/etc/localtime:ro \

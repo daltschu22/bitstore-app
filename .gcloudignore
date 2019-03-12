@@ -3,3 +3,4 @@ tmp/
 *.pem
 *.pyc
 *.sh
+core

@@ -81,7 +81,7 @@ class FilesystemEditPage(webapp2.RequestHandler):
 
         # fields to potentially update
         fields = [
-            'bits_contact',
+            'active'
             'primary_contact',
             'quote',
             'secondary_contact',

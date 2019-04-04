@@ -99,6 +99,7 @@ class FilesystemEditPage(webapp2.RequestHandler):
                     update = True
 
         if update:
+            print(filesystem)
             response = b.bitstore.filesystems().insert(body=filesystem).execute()
             print(response)
 

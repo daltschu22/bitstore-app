@@ -18,17 +18,7 @@
         <label for="active" class="col-sm-2 col-form-label">Status</label>
         <div class="checkbox">
             <div class="col-sm-10">
-                <!-- <input type="checkbox" id="active_toggle"> -->
-                <input id="active-toggle" type="checkbox" data-toggle="toggle" {% if filesystem.active == True %} checked{% endif %} data-on="Active" data-off="Inactive"{% if not edit %} data-onstyle="outline-primary" disabled{% endif %}>
-                <div type="text" id="active" name="active"></div>
-                <script>
-                    $(function() {
-                        $("active-toggle").change(function() {
-                            // $("#active").prop("value", $(this).prop("checked"))
-                            $("#active").prop("value", False)
-                        })
-                    })
-                </script>
+                <input id="active" type="checkbox" name="active" data-toggle="toggle" {% if filesystem.active == True %} checked{% endif %} data-on="Active" data-off="Inactive"{% if not edit %} data-onstyle="outline-primary" disabled{% endif %}>
             </div>
         </div>
     </div>

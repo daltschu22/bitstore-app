@@ -95,6 +95,11 @@ class FilesystemEditPage(webapp2.RequestHandler):
                 old = filesystem.get(field)
                 new = post_data.get(field)
                 if old != new:
+                    if field == 'active':
+                        if new == 'on':
+                            new = True
+                        if new == 'off':
+                            new = False
                     filesystem[field] = new
                     update = True
 

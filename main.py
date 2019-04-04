@@ -85,7 +85,7 @@ class FilesystemEditPage(webapp2.RequestHandler):
             'primary_contact',
             'quote',
             'secondary_contact',
-            'storage_class_id',
+            'storage_class_id'
         ]
 
         # check post data for fields to update

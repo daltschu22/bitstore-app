@@ -2,3 +2,7 @@
 body {
   min-height: 75rem;
 }
+
+input[type=checkbox] {
+  transform: scale(1.5);
+}

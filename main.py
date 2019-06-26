@@ -77,15 +77,25 @@ class FilesystemEditPage(webapp2.RequestHandler):
         """Update a filesystem."""
         b = BITStore(**PARAMS)
         filesystem = b.get_filesystem(filesystem_id)
-        post_data = self.request.POST
+        post_data = dict(self.request.POST)
+
+        print('Initial Post Data: %s' % (post_data))
+
+        # check active
+        if 'active' in post_data:
+            post_data['active'] = True
+        else:
+            post_data['active'] = False
+
+        print('Active Post Data: %s' % (post_data))
 
         # fields to potentially update
         fields = [
-            'bits_contact',
+            'active',
             'primary_contact',
             'quote',
             'secondary_contact',
-            'storage_class_id',
+            'storage_class_id'
         ]
 
         # check post data for fields to update
@@ -95,12 +105,18 @@ class FilesystemEditPage(webapp2.RequestHandler):
                 old = filesystem.get(field)
                 new = post_data.get(field)
                 if old != new:
+                    if field == 'active':
+                        if new == 'on':
+                            new = True
+                        if new == 'off':
+                            new = False
                     filesystem[field] = new
                     update = True
 
         if update:
+            # print(filesystem)
             response = b.bitstore.filesystems().insert(body=filesystem).execute()
-            print(response)
+            # print(response)
 
         self.redirect('/filesystems/%s' % (filesystem_id))
 

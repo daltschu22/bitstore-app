@@ -95,6 +95,7 @@ class FilesystemEditPage(webapp2.RequestHandler):
             'primary_contact',
             'quote',
             'secondary_contact',
+            'notes',
             'storage_class_id'
         ]
 

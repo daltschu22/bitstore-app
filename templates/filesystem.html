@@ -58,6 +58,18 @@
     <div class="form-group row"></div>
 
     <div class="form-group row">
+        <h4>Filesystem Notes</h4>
+    </div>
+
+    <div class="form-group row">
+        <label for="notes" class="col-sm-2 col-form-label">Notes</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="notes" name="notes"
+                value="{{ filesystem.notes }}" {% if not edit %}readonly{% endif %}>
+        </div>
+    </div>
+
+    <div class="form-group row">
         <h4>Contact Info</h4>
     </div>
 
@@ -84,7 +96,6 @@
                 value="{{ filesystem.secondary_contact }}" {% if not edit %}readonly{% endif %}>
         </div>
     </div>
-
 
     <div class="form-group row"></div>
 

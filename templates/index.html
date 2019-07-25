@@ -1,5 +1,7 @@
-<h2>Filesystems ({{ count }})</h2>
+
+<h1>Filesystems ({{ count }})</h1>
 <p class="text-danger">Filesystems with no quote will show in red</p>
+<div class="table-responsive-sm">
 <table class="table">
     <thead>
         <tr>
@@ -8,19 +10,17 @@
         </tr>
     </thead>
     {% for s in servers|sort %}
-    <thead>
-        <tr>
-            <th>{{ s }} ({{ servers[s]|length }})</th>
-        </tr>
-    </thead>
     <tbody>
-        {% for f in servers[s] %}
-        <tr>
-            <td><a {% if not f.quote %}class="text-danger"{% endif %} href="/filesystems/{{ f.id }}">{{ f.fs }}</a></td>
-            <td>{% if f.mountpoints %}{{f.mountpoints[0].mountpoint }}{% endif %}</td>
+        <tr class="fs_header">
+            <td colspan="2">{{ s }} ({{ servers[s]|length }})</td>
         </tr>
-        {% endfor %}
+            {% for f in servers[s] %}
+            <tr>
+                <td><a href="/filesystems/{{ f.id }}" {% if not f.quote %}class="text-danger"{% endif %}>{{ f.fs }}</a></td>
+                <td>{% if f.mountpoints %}{{f.mountpoints[0].mountpoint }}{% endif %}</td>
+            </tr>
+            {% endfor %}
     </tbody>
     {% endfor %}
-    </table>
-
+</table>
+</div>

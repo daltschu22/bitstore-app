@@ -16,7 +16,7 @@
     <tbody>
         {% for f in servers[s] %}
         <tr>
-            <td><a href="/filesystems/{{ f.id }}">{{ f.fs }}</a></td>
+            <td><a {% if not f.quote %}class="text-danger"{% endif %} href="/filesystems/{{ f.id }}">{{ f.fs }}</a></td>
             <td>{% if f.mountpoints %}{{f.mountpoints[0].mountpoint }}{% endif %}</td>
         </tr>
         {% endfor %}

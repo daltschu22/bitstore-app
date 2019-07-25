@@ -161,7 +161,7 @@ class MainPage(webapp2.RequestHandler):
         template_values = {
             'filesystems': filesystems,
             'count': len(filesystems),
-            'servers': servers
+            'servers': servers,
         }
         template = jinja.get_template('index.html')
         body = template.render(template_values)

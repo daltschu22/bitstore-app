@@ -149,8 +149,19 @@ class MainPage(webapp2.RequestHandler):
         """Return the main page."""
         b = BITStore(**PARAMS)
         filesystems = b.get_filesystems()
+
+        servers = {}
+        for f in filesystems:
+            server = f['server']
+            if server in servers:
+                servers[server].append(f)
+            else:
+                servers[server] = [f]
+
         template_values = {
             'filesystems': filesystems,
+            'count': len(filesystems),
+            'servers': servers
         }
         template = jinja.get_template('index.html')
         body = template.render(template_values)

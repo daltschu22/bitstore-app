@@ -1,6 +1,10 @@
 .fs_header {
   font-weight: bold;
-  border-top: 0px;
+  border: 1px solid;
+}
+.table_header {
+  border: 1px solid;
+  font-size: 18px;
 }
 
 /* Show it's not fixed to the top */

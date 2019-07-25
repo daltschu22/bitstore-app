@@ -9,6 +9,8 @@ from google.appengine.api import users
 
 from bitstoreapiclient import BITStore
 
+from PubsubMessages import PubsubMessages
+
 jinja = jinja2.Environment(
     loader=jinja2.FileSystemLoader('templates'),
     extensions=['jinja2.ext.autoescape'],
@@ -145,6 +147,14 @@ class FilesystemPage(webapp2.RequestHandler):
 class MainPage(webapp2.RequestHandler):
     """Class for MainPage."""
 
+    # Initialize pubsub class
+    #def __init__(self):
+        #self.pubsub = PubsubMessages(
+        #    service_account_file='broad-bitstore-app-5ac3a613c0cf.json',
+        #    project='broad-bitstore-app',
+        #    cache_file='cache_tmp.cache'
+        #    )
+
     def get(self):
         """Return the main page."""
         b = BITStore(**PARAMS)
@@ -162,6 +172,7 @@ class MainPage(webapp2.RequestHandler):
             'filesystems': filesystems,
             'count': len(filesystems),
             'servers': servers,
+          #  'pubsub': self.pubsub
         }
         template = jinja.get_template('index.html')
         body = template.render(template_values)

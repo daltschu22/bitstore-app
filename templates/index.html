@@ -1,4 +1,4 @@
-<h2>Welcome</h2>
+<h2>Filesystems ({{ count }})</h2>
 
 <table class="table">
     <thead>
@@ -7,13 +7,20 @@
             <th scope="col">Mount Path</th>
         </tr>
     </thead>
+    {% for s in servers|sort %}
+    <thead>
+        <tr>
+            <th>{{ s }} ({{ servers[s]|length }})</th>
+        </tr>
+    </thead>
     <tbody>
-        {% for f in filesystems|sort(attribute='fs') %}
+        {% for f in servers[s] %}
         <tr>
             <td><a href="/filesystems/{{ f.id }}">{{ f.fs }}</a></td>
             <td>{% if f.mountpoints %}{{f.mountpoints[0].mountpoint }}{% endif %}</td>
         </tr>
-
         {% endfor %}
     </tbody>
-</table>
+    {% endfor %}
+    </table>
+

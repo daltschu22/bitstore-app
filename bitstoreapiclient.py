@@ -162,7 +162,7 @@ class BITStore(object):
         header_and_payload = '{}.{}'.format(
             base64.urlsafe_b64encode(header_json),
             base64.urlsafe_b64encode(payload_json))
-        (key_name, signature) = app_identity.sign_blob(header_and_payload)
+        (_, signature) = app_identity.sign_blob(header_and_payload)
         signed_jwt = '{}.{}'.format(
             header_and_payload,
             base64.urlsafe_b64encode(signature))

@@ -1,7 +1,9 @@
-tmp/
+.config
+.git
 *.p12
 *.pem
 *.pyc
 *.sh
 config-*.py
 core
+tmp/

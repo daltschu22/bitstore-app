@@ -8,9 +8,9 @@ import time
 import urllib
 
 # support for requests
-import requests
-import requests_toolbelt.adapters.appengine
-requests_toolbelt.adapters.appengine.monkeypatch()
+# import requests
+# import requests_toolbelt.adapters.appengine
+# requests_toolbelt.adapters.appengine.monkeypatch()
 
 from apiclient.discovery import build
 from google.appengine.api import app_identity
@@ -18,7 +18,7 @@ from google.appengine.api import memcache
 
 import google.auth
 # from google.auth.transport import request
-from google.auth.transport.requests import AuthorizedSession
+# from google.auth.transport.requests import AuthorizedSession
 
 from oauth2client.contrib.appengine import AppAssertionCredentials
 from oauth2client import client
@@ -116,26 +116,26 @@ class BITStore(object):
             body = objects.get(bucket=bucket, object=filename).execute()
         except Exception as e:
             if e._get_reason() == 'Not Found':
-                print 'ERROR: service account key [gs://%s/%s] not found!' % (
+                print('ERROR: service account key [gs://%s/%s] not found!' % (
                     bucket,
                     filename,
-                )
+                ))
             else:
-                print 'ERROR: getting service account key [gs://%s/%s]!' % (
+                print('ERROR: getting service account key [gs://%s/%s]!' % (
                     bucket,
                     filename,
-                )
+                ))
             return
 
         if 'metadata' not in body:
-            print 'WARNING: "metadata" not found in gs://%s/%s' % (
+            print('WARNING: "metadata" not found in gs://%s/%s' % (
                 bucket,
                 filename,
-            )
+            ))
             body['metadata'] = {'encrypted': False}
             objects.update(bucket=bucket, object=filename, body=body).execute()
 
-        print json.dumps(body, indent=2, sort_keys=True)
+        print(json.dumps(body, indent=2, sort_keys=True))
 
     def generate_jwt(self, service_account_email):
         """Generate a signed JSON Web Token using the Google App Engine default service account."""

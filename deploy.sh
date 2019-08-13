@@ -5,8 +5,5 @@ if [ "$1" == 'dev' ]; then
   APP="broad-bitstore-app-dev"
 fi
 
-# set project
-gcloud config set project ${APP}
-
 # deploy app
-gcloud -q app deploy
+gcloud -q app deploy --project ${APP}

@@ -4,8 +4,13 @@ import base64
 import httplib
 import httplib2
 import json
+import sys
 import time
-import urllib
+
+if sys.version_info >= (3, 0):
+    from urllib.parse import urlencode
+else:
+    from urllib import urlencode
 
 # support for requests
 # import requests
@@ -171,7 +176,7 @@ class BITStore(object):
 
     def get_id_token(self, service_account_email):
         """Request a Google ID token using a JWT."""
-        params = urllib.urlencode({
+        params = urlencode({
             'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
             'assertion': self.generate_jwt(service_account_email)
         })

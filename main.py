@@ -5,9 +5,10 @@ import json
 import os
 import webapp2
 
+from bitstoreapiclient import BITStore
 from google.appengine.api import users
 
-from bitstoreapiclient import BITStore
+from config import api, api_key, base_url, debug
 
 jinja = jinja2.Environment(
     loader=jinja2.FileSystemLoader('templates'),
@@ -15,9 +16,10 @@ jinja = jinja2.Environment(
     autoescape=True)
 
 PARAMS = {
-    'api_key': 'AIzaSyDzRhwd2xw77iyyp0acSEB3yNgNhdntAV0',
-    # 'base_url': 'http://karlsson.c.broad-karlsson.internal:8081/_ah/api',
-    # 'debug': True,
+    'api': api,
+    'api_key': api_key,
+    'base_url': base_url,
+    'debug': debug,
 }
 
 

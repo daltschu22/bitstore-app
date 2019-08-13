@@ -3,4 +3,5 @@ tmp/
 *.pem
 *.pyc
 *.sh
+config-*.py
 core

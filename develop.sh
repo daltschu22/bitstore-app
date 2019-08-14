@@ -1,9 +1,15 @@
 #!/bin/bash
 
 APP="broad-bitstore-app"
+CONFIG='config-prod.py'
+SERVICEACCOUNT='service_account.pem'
 if [ "$1" == 'dev' ]; then
   APP="broad-bitstore-app-dev"
+  CONFIG='config-dev.py'
+  SERVICEACCOUNT='service_account_dev.pem'
 fi
+
+cp ${CONFIG} config.py
 
 sudo docker run -it --rm \
   -v /etc/localtime:/etc/localtime:ro \
@@ -31,4 +37,3 @@ sudo docker run -it --rm \
       --use_mtime_file_watcher true \
       app.yaml
       # --clear_datastore
-

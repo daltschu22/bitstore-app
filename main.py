@@ -4,10 +4,12 @@ import jinja2
 import json
 import os
 import webapp2
+from datetime import datetime
 
-from bitstoreapiclient import BITStore
+import google.auth
 from google.appengine.api import users
 
+from bitstoreapiclient import BITStore
 from config import api, api_key, base_url, debug
 
 jinja = jinja2.Environment(
@@ -38,7 +40,7 @@ def render_theme(body, request):
         body=body,
         is_admin=users.is_current_user_admin(),
         is_dev=is_dev(),
-        request=request,
+        request=request
     )
 
 
@@ -121,7 +123,7 @@ class FilesystemEditPage(webapp2.RequestHandler):
             response = b.bitstore.filesystems().insert(body=filesystem).execute()
             # print(response)
 
-        self.redirect('/filesystems/%s' % (filesystem_id))
+        self.redirect('/admin/filesystems/%s' % (filesystem_id))
 
 
 class FilesystemPage(webapp2.RequestHandler):
@@ -144,8 +146,63 @@ class FilesystemPage(webapp2.RequestHandler):
         self.response.write(output)
 
 
-class MainPage(webapp2.RequestHandler):
-    """Class for MainPage."""
+class Usage(webapp2.RequestHandler):
+    """Class for Usage page."""
+
+    def get(self):
+        """Return the usage page."""
+        b = BITStore(**PARAMS)
+        filesystems = b.get_filesystems()
+        storageclasses = b.get_storageclasses()
+
+        # Get the latest usage data from BQ
+        latest_usages = b.get_latest_fs_usages()
+
+        latest_usage_date = latest_usages[1]['datetime'].split("+")[0]
+
+        # Make the list of dicts into a dict of dicts with fs value as key
+        by_fs = {}
+        for bq_row in latest_usages:
+            if not bq_row['active']:
+                continue
+            by_fs[bq_row['fs']] = bq_row
+
+        # assemble a dictionary using each quote as a key
+        # WHY ARE THERE 2 OF THESE?!?!?
+        #quotes = {}
+        #for fs, fs_value in by_fs.items():
+        #    if fs_value['quote'] in quotes:
+        #        quotes[fs_value['quote']][fs] = fs_value
+        #    else:
+        #        quotes[fs_value['quote']] = {fs: fs_value}
+
+        # assemble a dictionary using each quote as a key
+        quotes = {}
+        for f in by_fs:
+            fs_row = by_fs[f]
+            quote = fs_row['quote']
+            if quote in quotes:
+                quotes[quote].append(fs_row)
+            else:
+                quotes[quote] = [fs_row]
+
+        template_values = {
+            'filesystems': filesystems,
+            'by_fs': by_fs,
+            'quotes_dict': quotes,
+            'latest_usage_date': latest_usage_date,
+            'storage_classes': storageclasses
+            }
+
+        template = jinja.get_template('usage.html')
+        body = template.render(template_values)
+
+        output = render_theme(body, self.request)
+        self.response.write(output)
+
+
+class Filesystems(webapp2.RequestHandler):
+    """Class for Filesystems page."""
 
     def get(self):
         """Return the main page."""
@@ -153,27 +210,36 @@ class MainPage(webapp2.RequestHandler):
         filesystems = b.get_filesystems()
 
         servers = {}
+        #quotes = {}
         for f in filesystems:
-            server = f['server']
+            server = f.get('server', None)
+            quote = f.get('quote', None)
+            # Assemble server dictionary
             if server in servers:
                 servers[server].append(f)
             else:
                 servers[server] = [f]
+            # Assemble quote dictionary
+            #if quote in quotes:
+            #    quotes[quote].append(f)
+            #else:
+            #    quotes[quote] = [f]
 
         template_values = {
             'filesystems': filesystems,
-            'count': len(filesystems),
             'servers': servers,
+            #'quotes': quotes
         }
-        template = jinja.get_template('index.html')
+        template = jinja.get_template('filesystems.html')
         body = template.render(template_values)
         output = render_theme(body, self.request)
         self.response.write(output)
 
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage),
-    ('/admin', AdminPage),
-    (r'/filesystems/(\d+)', FilesystemPage),
-    (r'/filesystems/(\d+)/edit', FilesystemEditPage),
+    ('/', Usage),
+    #('/admin', AdminPage),
+    ('/admin/filesystems', Filesystems),
+    (r'/admin/filesystems/(\d+)', FilesystemPage),
+    (r'/admin/filesystems/(\d+)/edit', FilesystemEditPage),
 ], debug=True)

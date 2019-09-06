@@ -12,7 +12,7 @@ handlers:
   static_files: styles.css
   upload: styles\.css
 
-- url: /admin
+- url: /admin/.*
   script: main.app
   login: admin
 

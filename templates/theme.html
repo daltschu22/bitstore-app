@@ -17,9 +17,16 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
 
 <!-- DataTable stuff -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.6/b-html5-1.5.6/r-2.2.2/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.6/b-html5-1.5.6/r-2.2.2/datatables.min.js"></script>
+<!--
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
-
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css">
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.1.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.1.2/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.1.2/js/buttons.print.min.js"></script>
+-->
 
 <!-- Custom styles for this template -->
 <link href="/styles.css" rel="stylesheet">
@@ -55,7 +62,7 @@
   </nav>
 
   <main role="main" class="container">
-    {{ body|safe }}
+   {{ body|safe }}
   </main>
 
   <footer>
@@ -70,18 +77,19 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
-  
   <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script> 
+  
+
 
   <script>
   $(document).ready(function () {
     $('#UsageTable').DataTable( 
         {
-        "pageLength": 100,
-        "lengthMenu": [ 10, 50, 100, 150, 200, 250 ],
-        "columnDefs": [
+        pageLength: 100,
+        lengthMenu: [ 10, 50, 100, 150, 200, 250 ],
+        columnDefs: [
             {   
-                "targets": [ 3, 4, 5, 6, 7, 8 ],
+                "targets": [ 3, 4, 5, 7, 8 ],
                 "render": function ( data ) {
                     var bytes = numeral(data).value()
 
@@ -89,6 +97,13 @@
 
                     return toTiB(bytes)
                 }
+            }
+        ],
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'csvHtml5',
+                text: 'Export to CSV',
             }
         ]
         }
@@ -100,8 +115,8 @@
   $(document).ready(function () {
     $('#FSTable').DataTable( 
         {
-        "pageLength": 100,
-        "lengthMenu": [ 10, 50, 100, 150, 200, 250 ]
+        pageLength: 100,
+        lengthMenu: [ 10, 50, 100, 150, 200, 250 ]
         }
     );
   } );

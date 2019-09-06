@@ -165,7 +165,38 @@ class Usage(webapp2.RequestHandler):
         for bq_row in latest_usages:
             if not bq_row['active']:
                 continue
+
+            # Assign the dictionary fs key to the bq sql result row values
             by_fs[bq_row['fs']] = bq_row
+
+            # Calculate overhead usages as a separate value
+            byte_usage_overhead = bq_row.get('byte_usage', 0)
+            if not byte_usage_overhead:
+                byte_usage_overhead = 0
+            byte_usage_without_overhead = bq_row.get('byte_usage_no_overhead', 0)
+            # If overhead DOESNT exist, set the overhead usage to 0 and set the share usage to the byte_usage value
+            if not byte_usage_without_overhead:
+                byte_usage_without_overhead = 0
+                by_fs[bq_row['fs']]['share_usage'] = byte_usage_overhead
+                overhead_usage = 0
+            # If overhead DOES exist, set the overhead usage to usage - overhead and share usage to usage_without_overhead
+            else:
+                by_fs[bq_row['fs']]['share_usage'] = byte_usage_without_overhead
+                overhead_usage = byte_usage_overhead - byte_usage_without_overhead
+
+            by_fs[bq_row['fs']]['overhead_usage'] = overhead_usage
+
+            # Calculate out the total usage value
+            dr_byte_usage = by_fs[bq_row['fs']].get('dr_byte_usage', 0)
+            if not dr_byte_usage:
+                dr_byte_usage = 0
+            snapshot_byte_usage = by_fs[bq_row['fs']].get('snapshot_byte_usage', 0)
+            if not snapshot_byte_usage:
+                snapshot_byte_usage = 0
+
+            total_usage = byte_usage_overhead + dr_byte_usage + snapshot_byte_usage
+            by_fs[bq_row['fs']]['total_usage'] = total_usage
+
 
         # assemble a dictionary using each quote as a key
         # WHY ARE THERE 2 OF THESE?!?!?

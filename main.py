@@ -155,14 +155,18 @@ class Usage(webapp2.RequestHandler):
         filesystems = b.get_filesystems()
         storageclasses = b.get_storageclasses()
 
+        filesys_dict = {}
+        for fs in filesystems:
+            filesys_dict[fs['fs']] = fs
+
         # Get the latest usage data from BQ
         latest_usages = b.get_latest_fs_usages()
-
         latest_usage_date = latest_usages[1]['datetime'].split("+")[0]
 
         # Make the list of dicts into a dict of dicts with fs value as key
         by_fs = {}
         for bq_row in latest_usages:
+            # Skip over inactive filesystems for this table
             if not bq_row['active']:
                 continue
 
@@ -197,30 +201,14 @@ class Usage(webapp2.RequestHandler):
             total_usage = byte_usage_overhead + dr_byte_usage + snapshot_byte_usage
             by_fs[bq_row['fs']]['total_usage'] = total_usage
 
-
-        # assemble a dictionary using each quote as a key
-        # WHY ARE THERE 2 OF THESE?!?!?
-        #quotes = {}
-        #for fs, fs_value in by_fs.items():
-        #    if fs_value['quote'] in quotes:
-        #        quotes[fs_value['quote']][fs] = fs_value
-        #    else:
-        #        quotes[fs_value['quote']] = {fs: fs_value}
-
-        # assemble a dictionary using each quote as a key
-        quotes = {}
-        for f in by_fs:
-            fs_row = by_fs[f]
-            quote = fs_row['quote']
-            if quote in quotes:
-                quotes[quote].append(fs_row)
-            else:
-                quotes[quote] = [fs_row]
+            if bq_row['fs'] in filesys_dict:
+                if filesys_dict[bq_row['fs']].get('mountpoints'):
+                    # This uuuuugly
+                    by_fs[bq_row['fs']]['mountpoint'] = filesys_dict[bq_row['fs']]['mountpoints'][0].get('mountpoint')
 
         template_values = {
-            'filesystems': filesystems,
+            'filesystems': filesys_dict,
             'by_fs': by_fs,
-            'quotes_dict': quotes,
             'latest_usage_date': latest_usage_date,
             'storage_classes': storageclasses
             }
@@ -241,25 +229,17 @@ class Filesystems(webapp2.RequestHandler):
         filesystems = b.get_filesystems()
 
         servers = {}
-        #quotes = {}
         for f in filesystems:
             server = f.get('server', None)
-            quote = f.get('quote', None)
             # Assemble server dictionary
             if server in servers:
                 servers[server].append(f)
             else:
                 servers[server] = [f]
-            # Assemble quote dictionary
-            #if quote in quotes:
-            #    quotes[quote].append(f)
-            #else:
-            #    quotes[quote] = [f]
 
         template_values = {
             'filesystems': filesystems,
             'servers': servers,
-            #'quotes': quotes
         }
         template = jinja.get_template('filesystems.html')
         body = template.render(template_values)

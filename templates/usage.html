@@ -5,6 +5,7 @@
         <tr>
             <th scope="col">Server</th>
             <th scope="col">Filesystem</th>
+            <th scope="col">Mount Path</th>
             <th scope="col">Quote</th>
             <th scope="col">Total Usage (TiB)</th>
             <th scope="col">Quota Limit (TiB)</th>
@@ -16,11 +17,11 @@
         </tr>
     </thead>
     <tbody>
-        {% for q in quotes_dict %}
-            {% for f in quotes_dict[q] %}
+        {% for fs_key, f in by_fs.items() %}
             <tr>
                 <td><a>{{ f.server }}</a></td>
                 <td><a>{{ f.fs }}</a></td>
+                <td><a>{% if f.mountpoint %}{{ f.mountpoint }}{% endif %}</a></td>
                 <td><a>{{ f.quote }}</a></td>
                 <td><a>{{ f.total_usage }}</a></td>
                 <td><a>{{ f.quota_allocation }}</a></td>
@@ -30,7 +31,6 @@
                 <td><a>{{ f.dr_byte_usage }}</a></td>
                 <td><a>{{ f.disk_backup }}</a></td>
             </tr>
-            {% endfor %}
         {% endfor %}
     </tbody>
 </table>

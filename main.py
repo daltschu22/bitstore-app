@@ -43,6 +43,28 @@ def render_theme(body, request):
         request=request
     )
 
+def fs_list_to_dict(filesystems):
+    """
+    Convert a list of filesystem objects to a dict
+    with each key being the FS and the object being the object
+    """
+    fs_dict = {}
+    for fs in filesystems:
+        fs_dict[fs['fs']] = fs
+
+    return fs_dict
+
+def storage_class_list_to_dict(storage_classes):
+    """
+    Convert a list of storage class objects to a dict
+    with each key being the id and the object being the object
+    """
+    sc_dict = {}
+    for sc in storage_classes:
+        sc_dict[sc['id']] = sc
+
+    return sc_dict
+
 
 class AdminPage(webapp2.RequestHandler):
     """Class for AdminPage."""
@@ -155,9 +177,9 @@ class Usage(webapp2.RequestHandler):
         filesystems = b.get_filesystems()
         storageclasses = b.get_storageclasses()
 
-        filesys_dict = {}
-        for fs in filesystems:
-            filesys_dict[fs['fs']] = fs
+        # Assemble the filesystem and storage class lists into dicts
+        filesys_dict = fs_list_to_dict(filesystems)
+        sc_dict = storage_class_list_to_dict(storageclasses)
 
         # Get the latest usage data from BQ
         latest_usages = b.get_latest_fs_usages()
@@ -198,19 +220,23 @@ class Usage(webapp2.RequestHandler):
             if not snapshot_byte_usage:
                 snapshot_byte_usage = 0
 
-            total_usage = byte_usage_overhead + dr_byte_usage + snapshot_byte_usage
+            total_usage = byte_usage_overhead + snapshot_byte_usage
             by_fs[bq_row['fs']]['total_usage'] = total_usage
 
             if bq_row['fs'] in filesys_dict:
                 if filesys_dict[bq_row['fs']].get('mountpoints'):
                     # This uuuuugly
                     by_fs[bq_row['fs']]['mountpoint'] = filesys_dict[bq_row['fs']]['mountpoints'][0].get('mountpoint')
+                if filesys_dict[bq_row['fs']].get('storage_class_id'):
+                    fs_sc_id = filesys_dict[bq_row['fs']].get('storage_class_id')
+                    if fs_sc_id in sc_dict:
+                        by_fs[bq_row['fs']]['storage_class'] = sc_dict[fs_sc_id].get('name')
+
 
         template_values = {
             'filesystems': filesys_dict,
             'by_fs': by_fs,
             'latest_usage_date': latest_usage_date,
-            'storage_classes': storageclasses
             }
 
         template = jinja.get_template('usage.html')

@@ -1,3 +1,4 @@
+<div class="container-fluid">
 <h2>Latest filesystem usages ({{ latest_usage_date }}):</h2>
 <div class="table-responsive-xl">
 <table class="table table-sm display" id="UsageTable">
@@ -14,6 +15,7 @@
             <th scope="col">Snapshot Usage (TiB)</th>
             <th scope="col">DR Usage (TiB)</th>
             <th scope="col">DR</th>
+            <th scope="col">Storage Class</th>
         </tr>
     </thead>
     <tbody>
@@ -22,14 +24,15 @@
                 <td><a>{{ f.server }}</a></td>
                 <td><a>{{ f.fs }}</a></td>
                 <td><a>{% if f.mountpoint %}{{ f.mountpoint }}{% endif %}</a></td>
-                <td><a>{{ f.quote }}</a></td>
+                <td><a>{% if f.quote %}{{ f.quote }}{% endif %}</a></td>
                 <td><a>{{ f.total_usage }}</a></td>
                 <td><a>{{ f.quota_allocation }}</a></td>
                 <td><a>{{ f.share_usage }}</a></td>
                 <td><a>{{ f.overhead_usage }}</a></td>
                 <td><a>{{ f.snapshot_byte_usage }}</a></td>
                 <td><a>{{ f.dr_byte_usage }}</a></td>
-                <td><a>{{ f.disk_backup }}</a></td>
+                <td><a>{% if f.disk_backup %}{{ f.disk_backup }}{% endif %}</a></td>
+                <td><a>{% if f.storage_class %}{{ f.storage_class }}{% endif %}</a></td>
             </tr>
         {% endfor %}
     </tbody>

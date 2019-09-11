@@ -1,5 +1,14 @@
-<div class="container-fluid">
 <h2>Latest filesystem usages ({{ latest_usage_date }}):</h2>
+<div class="dropdown float-right">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Select Date:
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    {% for dt in available_dates %}
+        <a class="dropdown-item" href="#">{{ dt.strftime("%Y/%m/%d") }}</a>
+    {% endfor %}
+  </div>
+</div>
 <div class="table-responsive-xl">
 <table class="table table-sm display" id="UsageTable">
     <thead>

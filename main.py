@@ -4,13 +4,14 @@ import jinja2
 import json
 import os
 import webapp2
-from datetime import datetime
-
+import datetime
 import google.auth
 from google.appengine.api import users
 
 from bitstoreapiclient import BITStore
 from config import api, api_key, base_url, debug
+
+todays_date = datetime.datetime.today()
 
 jinja = jinja2.Environment(
     loader=jinja2.FileSystemLoader('templates'),
@@ -23,7 +24,6 @@ PARAMS = {
     'base_url': base_url,
     'debug': debug,
 }
-
 
 def is_dev():
     """Return true if this is the development environment."""
@@ -88,7 +88,7 @@ class FilesystemEditPage(webapp2.RequestHandler):
         b = BITStore(**PARAMS)
         filesystem = b.get_filesystem(filesystem_id)
         storageclasses = b.get_storageclasses()
-        template = jinja.get_template('filesystem.html')
+        template = jinja.get_template('admin-filesystem.html')
         body = template.render(
             edit=True,
             filesystem=filesystem,
@@ -105,7 +105,7 @@ class FilesystemEditPage(webapp2.RequestHandler):
         filesystem = b.get_filesystem(filesystem_id)
         post_data = dict(self.request.POST)
 
-        print('Initial Post Data: %s' % (post_data))
+        print('Initial Post Data: {}'.format(post_data))
 
         # check active
         if 'active' in post_data:
@@ -113,7 +113,7 @@ class FilesystemEditPage(webapp2.RequestHandler):
         else:
             post_data['active'] = False
 
-        print('Active Post Data: %s' % (post_data))
+        print('Active Post Data: {}'.format(post_data))
 
         # fields to potentially update
         fields = [
@@ -156,7 +156,7 @@ class FilesystemPage(webapp2.RequestHandler):
         b = BITStore(**PARAMS)
         filesystem = b.get_filesystem(filesystem_id)
         storageclasses = b.get_storageclasses()
-        template = jinja.get_template('filesystem.html')
+        template = jinja.get_template('admin-filesystem.html')
         body = template.render(
             edit=False,
             filesystem=filesystem,
@@ -171,7 +171,7 @@ class FilesystemPage(webapp2.RequestHandler):
 class Usage(webapp2.RequestHandler):
     """Class for Usage page."""
 
-    def get(self):
+    def get(self, date_time=000000):
         """Return the usage page."""
         b = BITStore(**PARAMS)
         filesystems = b.get_filesystems()
@@ -181,8 +181,13 @@ class Usage(webapp2.RequestHandler):
         filesys_dict = fs_list_to_dict(filesystems)
         sc_dict = storage_class_list_to_dict(storageclasses)
 
+        if date_time == 000000:
+            sql_datetime = '(select max(datetime) from broad_bitstore_app.bits_billing_byfs_bitstore_historical)'
+        else:
+            sql_datetime = date_time
+
         # Get the latest usage data from BQ
-        latest_usages = b.get_latest_fs_usages()
+        latest_usages = b.get_fs_usages(sql_datetime)
         latest_usage_date = latest_usages[1]['datetime'].split("+")[0]
 
         # Make the list of dicts into a dict of dicts with fs value as key
@@ -232,12 +237,14 @@ class Usage(webapp2.RequestHandler):
                     if fs_sc_id in sc_dict:
                         by_fs[bq_row['fs']]['storage_class'] = sc_dict[fs_sc_id].get('name')
 
+        available_dates = [todays_date - datetime.timedelta(days=x) for x in range(25)]
 
         template_values = {
             'filesystems': filesys_dict,
             'by_fs': by_fs,
             'latest_usage_date': latest_usage_date,
-            }
+            'available_dates': available_dates
+        }
 
         template = jinja.get_template('usage.html')
         body = template.render(template_values)
@@ -267,14 +274,14 @@ class Filesystems(webapp2.RequestHandler):
             'filesystems': filesystems,
             'servers': servers,
         }
-        template = jinja.get_template('filesystems.html')
+        template = jinja.get_template('admin-filesystems.html')
         body = template.render(template_values)
         output = render_theme(body, self.request)
         self.response.write(output)
 
 
 app = webapp2.WSGIApplication([
-    ('/', Usage),
+    (r'/(\d+)', Usage),
     #('/admin', AdminPage),
     ('/admin/filesystems', Filesystems),
     (r'/admin/filesystems/(\d+)', FilesystemPage),

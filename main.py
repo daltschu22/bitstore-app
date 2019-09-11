@@ -171,7 +171,7 @@ class FilesystemPage(webapp2.RequestHandler):
 class Usage(webapp2.RequestHandler):
     """Class for Usage page."""
 
-    def get(self, date_time=000000):
+    def get(self, date_time=None):
         """Return the usage page."""
         b = BITStore(**PARAMS)
         filesystems = b.get_filesystems()
@@ -181,14 +181,23 @@ class Usage(webapp2.RequestHandler):
         filesys_dict = fs_list_to_dict(filesystems)
         sc_dict = storage_class_list_to_dict(storageclasses)
 
-        if date_time == 000000:
+        if not date_time:
             sql_datetime = '(select max(datetime) from broad_bitstore_app.bits_billing_byfs_bitstore_historical)'
+            latest_usages = b.get_fs_usages(sql_datetime)
         else:
-            sql_datetime = date_time
+            y = date_time[0:2]
+            m = date_time[2:4]
+            d = date_time[4:6]
+            sql_datetime = '(select max(datetime) from broad_bitstore_app.bits_billing_byfs_bitstore_historical where DATE(datetime) = "20{}-{}-{}" )'.format(y, m, d)
+            latest_usages = b.get_fs_usages(sql_datetime, memcache=False)
+
+        print(sql_datetime, date_time, y,m,d)
 
         # Get the latest usage data from BQ
-        latest_usages = b.get_fs_usages(sql_datetime)
+        #latest_usages = b.get_fs_usages(sql_datetime)
         latest_usage_date = latest_usages[1]['datetime'].split("+")[0]
+
+        print(latest_usages[1])
 
         # Make the list of dicts into a dict of dicts with fs value as key
         by_fs = {}
@@ -281,7 +290,7 @@ class Filesystems(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    (r'/(\d+)', Usage),
+    webapp2.Route('/<date_time>', handler=Usage, name='usage-page'),
     #('/admin', AdminPage),
     ('/admin/filesystems', Filesystems),
     (r'/admin/filesystems/(\d+)', FilesystemPage),

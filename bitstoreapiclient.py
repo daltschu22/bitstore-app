@@ -309,8 +309,11 @@ class BITStore(object):
 
         return table_list
 
-    def get_fs_usages(self, datetime):
-        fs_usage_latest = self.get_memcache_group('fs_usage_latest')
+    def get_fs_usages(self, datetime, memcache=True):
+        if memcache:
+            fs_usage_latest = self.get_memcache_group('fs_usage_latest')
+        else:
+            fs_usage_latest = None
         if fs_usage_latest is not None:
             return fs_usage_latest
         data = {

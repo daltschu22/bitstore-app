@@ -314,6 +314,7 @@ class BITStore(object):
             fs_usage_latest = self.get_memcache_group('fs_usage_latest')
         else:
             fs_usage_latest = None
+
         if fs_usage_latest is not None:
             return fs_usage_latest
         data = {
@@ -323,5 +324,6 @@ class BITStore(object):
             'date_time': datetime
         }
         fs_usage_latest = json.loads(self.query_historical_usage_bq(data))
-        self.save_memcache_group('fs_usage_latest', fs_usage_latest, 'server')
+        if memcache:
+            self.save_memcache_group('fs_usage_latest', fs_usage_latest, 'server')
         return fs_usage_latest

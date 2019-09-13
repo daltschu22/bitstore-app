@@ -194,7 +194,7 @@ class Usage(webapp2.RequestHandler):
 
         latest_usage_date = latest_usages[1]['datetime'].split("+")[0]
 
-        print(latest_usages[1])
+        #print(latest_usages[1])
 
         # Make the list of dicts into a dict of dicts with fs value as key
         by_fs = {}

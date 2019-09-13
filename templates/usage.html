@@ -1,11 +1,11 @@
-<h2>Latest filesystem usages ({{ latest_usage_date }}):</h2>
+<h2>Latest filesystem usages in Tebibytes ({{ latest_usage_date }}):</h2>
 <div class="dropdown float-right">
   <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     Select Date:
   </button>
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
     {% for dt in available_dates %}
-        <a class="dropdown-item" href="/usage?date_time={{ dt.strftime("%Y-%m-%d") }}">{{ dt.strftime("%Y/%m/%d") }}</a>
+        <a class="dropdown-item" href="/?date_time={{ dt.strftime("%Y-%m-%d") }}">{{ dt.strftime("%Y/%m/%d") }}</a>
     {% endfor %}
   </div>
 </div>
@@ -17,14 +17,14 @@
             <th scope="col">Filesystem</th>
             <th scope="col">Mount Path</th>
             <th scope="col">Quote</th>
-            <th scope="col">Total Usage (TiB)</th>
-            <th scope="col">Quota Limit (TiB)</th>
-            <th scope="col">Share Usage (TiB)</th>
-            <th scope="col">Overhead Usage (TiB)</th>
-            <th scope="col">Snapshot Usage (TiB)</th>
-            <th scope="col">DR Usage (TiB)</th>
-            <th scope="col">DR</th>
+            <th scope="col">Quota Limit</th>
             <th scope="col">Storage Class</th>
+            <th scope="col">Total Usage</th>
+            <th scope="col">Share Usage</th>
+            <th scope="col">Overhead Usage</th>
+            <th scope="col">Snapshot Usage</th>
+            <th scope="col">DR</th>
+            <th scope="col">DR Usage</th>
         </tr>
     </thead>
     <tbody>
@@ -34,14 +34,14 @@
                 <td><a>{{ f.fs }}</a></td>
                 <td><a>{% if f.mountpoint %}{{ f.mountpoint }}{% endif %}</a></td>
                 <td><a>{% if f.quote %}{{ f.quote }}{% endif %}</a></td>
-                <td><a>{{ f.total_usage }}</a></td>
                 <td><a>{{ f.quota_allocation }}</a></td>
+                <td><a>{% if f.storage_class %}{{ f.storage_class }}{% endif %}</a></td>
+                <td><a>{{ f.total_usage }}</a></td>
                 <td><a>{{ f.share_usage }}</a></td>
                 <td><a>{{ f.overhead_usage }}</a></td>
                 <td><a>{{ f.snapshot_byte_usage }}</a></td>
-                <td><a>{{ f.dr_byte_usage }}</a></td>
                 <td><a>{% if f.disk_backup %}{{ f.disk_backup }}{% endif %}</a></td>
-                <td><a>{% if f.storage_class %}{{ f.storage_class }}{% endif %}</a></td>
+                <td><a>{{ f.dr_byte_usage }}</a></td>
             </tr>
         {% endfor %}
     </tbody>

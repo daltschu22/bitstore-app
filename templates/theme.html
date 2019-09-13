@@ -17,8 +17,8 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
 
 <!-- DataTable stuff -->
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.6/b-html5-1.5.6/r-2.2.2/datatables.min.css"/>
-<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.6/b-html5-1.5.6/r-2.2.2/datatables.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.6/b-html5-1.5.6/fh-3.1.4/r-2.2.2/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.18/b-1.5.6/b-html5-1.5.6/fh-3.1.4/r-2.2.2/datatables.min.js"></script>
 <!--
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
 <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
@@ -78,11 +78,12 @@
   $(document).ready(function () {
     $('#UsageTable').DataTable( 
         {
+            fixedHeader: true,
             pageLength: 50,
             lengthMenu: [ 10, 50, 100, 150, 200, 250 ],
             columnDefs: [
                 {   
-                    "targets": [ 4, 5, 6, 7, 8, 9 ],
+                    "targets": [ 4, 6, 7, 8, 9, 11 ],
                     "render": function ( data ) {
                         var bytes = numeral(data).value()
 
@@ -96,7 +97,7 @@
             buttons: [
                 {
                     extend: 'csvHtml5',
-                    text: 'Export to CSV',
+                    text: 'Export to CSV'
                 }
             ]
         }

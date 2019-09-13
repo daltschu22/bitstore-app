@@ -243,7 +243,7 @@ class Usage(webapp2.RequestHandler):
                     if fs_sc_id in sc_dict:
                         by_fs[bq_row['fs']]['storage_class'] = sc_dict[fs_sc_id].get('name')
 
-        available_dates = [todays_date - datetime.timedelta(days=x) for x in range(25)]
+        available_dates = [todays_date - datetime.timedelta(days=x) for x in range(45)]
 
         template_values = {
             'filesystems': filesys_dict,

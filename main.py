@@ -287,7 +287,7 @@ class Filesystems(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    ('/usage', Usage),
+    ('/', Usage),
     #('/admin', AdminPage),
     ('/admin/filesystems', Filesystems),
     (r'/admin/filesystems/(\d+)', FilesystemPage),

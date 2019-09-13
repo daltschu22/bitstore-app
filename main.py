@@ -171,7 +171,7 @@ class FilesystemPage(webapp2.RequestHandler):
 class Usage(webapp2.RequestHandler):
     """Class for Usage page."""
 
-    def get(self, time_var=None):
+    def get(self):
         """Return the usage page."""
         b = BITStore(**PARAMS)
         filesystems = b.get_filesystems()
@@ -181,11 +181,11 @@ class Usage(webapp2.RequestHandler):
         filesys_dict = fs_list_to_dict(filesystems)
         sc_dict = storage_class_list_to_dict(storageclasses)
 
-        print(time_var)
+        date_time = self.request.get('date_time')
 
-        if time_var:
+        if date_time:
             # Get the data from the supplied date string like 'yy-mm-dd'
-            sql_datetime = '(select max(datetime) from broad_bitstore_app.bits_billing_byfs_bitstore_historical where DATE(datetime) = "{}" )'.format(time_var)
+            sql_datetime = '(select max(datetime) from broad_bitstore_app.bits_billing_byfs_bitstore_historical where DATE(datetime) = "{}" )'.format(date_time)
             latest_usages = b.get_fs_usages(sql_datetime, memcache=False)
         else:
              # Or else just get the latest usage data from BQ
@@ -287,9 +287,8 @@ class Filesystems(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    webapp2.Route('/<time_var:.*?>', handler=Usage, name='usage-page'),
+    ('/usage', Usage),
     #('/admin', AdminPage),
-    #webapp2.Route('/usage<date_time:(\d{4}-\d{2}-\d{2})?>', handler=Usage, name='usage-page'),
     ('/admin/filesystems', Filesystems),
     (r'/admin/filesystems/(\d+)', FilesystemPage),
     (r'/admin/filesystems/(\d+)/edit', FilesystemEditPage),

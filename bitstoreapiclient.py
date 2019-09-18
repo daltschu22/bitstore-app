@@ -319,7 +319,7 @@ class BITStore(object):
         if not datetime:
             datetime = '(select max(datetime) from broad_bitstore_app.bits_billing_byfs_bitstore_historical)'
         data = {
-            'select': '*',
+            'select': select,
             'dataset': 'broad_bitstore_app',
             'table_name': 'bits_billing_byfs_bitstore_historical',
             'date_time': datetime

@@ -186,16 +186,14 @@ class Usage(webapp2.RequestHandler):
         if date_time:
             # Get the data from the supplied date string like 'yy-mm-dd'
             sql_datetime = '(select max(datetime) from broad_bitstore_app.bits_billing_byfs_bitstore_historical where DATE(datetime) = "{}" )'.format(date_time)
-            latest_usages = b.get_fs_usages(sql_datetime, memcache=False)
+            latest_usages = b.get_fs_usages(datetime=sql_datetime)
         else:
              # Or else just get the latest usage data from BQ
-            sql_datetime = '(select max(datetime) from broad_bitstore_app.bits_billing_byfs_bitstore_historical)'
-            latest_usages = b.get_fs_usages(sql_datetime)
+            latest_usages = b.get_fs_usages()
 
         # If date doesnt exist, kick person back up to latest date
         if not latest_usages:
-            sql_datetime = '(select max(datetime) from broad_bitstore_app.bits_billing_byfs_bitstore_historical)'
-            latest_usages = b.get_fs_usages(sql_datetime)
+            latest_usages = b.get_fs_usages()
 
         latest_usage_date = latest_usages[1]['datetime'].split("+")[0]
 

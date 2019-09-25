@@ -1,17 +1,23 @@
-<div>
-  <div class="float-left">
-    <h2>Latest filesystem usages in Tebibytes ({{ latest_usage_date }}):</h2>
-  </div>
-  <div class="dropdown float-right">
-    <button class="btn btn-secondary dropdown-toggle bg-light text-dark" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<div class="row col">
+    <div>
+		<h2>Latest filesystem usages in Tebibytes ({{ latest_usage_date }}):</h2>
+	</div>
+</div>
+
+<div class="row col justify-content-between">
+    <div>
+		<h6>To view an explanation behind each of these values please visit:  <a href="http://svcnow.broadinstitute.org/KB0011293">Filesystem Breakdown</a></h6>
+	</div>
+    <div class="dropdown">
+		<button class="btn btn-secondary dropdown-toggle bg-light text-dark" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       Select Date:
     </button>
-    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      {% for dt in available_dates %}
-          <a class="dropdown-item" href="/?date_time={{ dt.strftime("%Y-%m-%d") }}">{{ dt.strftime("%Y/%m/%d") }}</a>
-      {% endfor %}
-    </div>
-  </div>
+		<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+			{% for dt in available_dates %}
+			    <a class="dropdown-item" href="/?date_time={{ dt.strftime("%Y-%m-%d") }}">{{ dt.strftime("%Y/%m/%d") }}</a>
+			{% endfor %}
+		</div>
+	</div>
 </div>
 
 <div class="table-responsive-xl">

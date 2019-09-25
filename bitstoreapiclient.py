@@ -309,21 +309,24 @@ class BITStore(object):
 
         return table_list
 
-    def get_fs_usages(self, datetime, memcache=True):
-        if memcache:
-            fs_usage_latest = self.get_memcache_group('fs_usage_latest')
+    def get_fs_usages(self, datetime=None, select='*'):
+        if datetime:
+            fs_usage = self.get_memcache_group('datetime')
         else:
-            fs_usage_latest = None
-
-        if fs_usage_latest is not None:
-            return fs_usage_latest
+            fs_usage = self.get_memcache_group('fs_usage_latest')
+        if fs_usage is not None:
+            return fs_usage
+        if not datetime:
+            datetime = '(select max(datetime) from broad_bitstore_app.bits_billing_byfs_bitstore_historical)'
         data = {
-            'select': '*',
+            'select': select,
             'dataset': 'broad_bitstore_app',
             'table_name': 'bits_billing_byfs_bitstore_historical',
             'date_time': datetime
         }
-        fs_usage_latest = json.loads(self.query_historical_usage_bq(data))
-        if memcache:
-            self.save_memcache_group('fs_usage_latest', fs_usage_latest, 'server')
-        return fs_usage_latest
+        fs_usage = json.loads(self.query_historical_usage_bq(data))
+        if not datetime:
+            self.save_memcache_group('fs_usage_latest', fs_usage, 'server')
+        else:
+            self.save_memcache_group(datetime, fs_usage, 'server')
+        return fs_usage

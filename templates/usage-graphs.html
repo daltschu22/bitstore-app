@@ -1,0 +1,38 @@
+<div class="row col">
+	<div>
+		<h2>Historical usage for {{ fs_name }}:</h2>
+	</div>
+</div>
+
+<div class="row">
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Date', 'Quota Allocation', 'Total Usage', 'Share Usage', 'Overhead Usage', 'Snapshot Usage'],
+          {% for f in fs_usage_sorted %}
+          [ '{{ f.get('datetime') }}', 
+            {{ f.get('quota_allocation') }}, 
+            {{ f.get('total_usage') }}, 
+            {{ f.get('share_usage') }}, 
+            {{ f.get('overhead_usage') }}, 
+            {{ f.get('snapshot_byte_usage') }} 
+          ],
+          {% endfor %}
+        ]);
+
+        var options = {'title':'{{ fs_name }}'};
+
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="chart_div" style="width: 100%; height: 500px;"></div>
+  </body>
+</div>

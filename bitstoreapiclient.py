@@ -290,7 +290,7 @@ class BITStore(object):
         return storageclasses
 
     # BQ queries
-    def query_historical_usage_bq(self, json_data):
+    def query_historical_usage_bq(self, json_data, function):
         """Query BQ table for the chosen dates set of filesystem data."""
 
         headers = {
@@ -301,7 +301,7 @@ class BITStore(object):
         # Assemble the headers and data into a HTTP request and run fetch
         table_list = urlfetch.fetch(
             method=urlfetch.POST,
-            url='https://us-central1-broad-bitstore-app.cloudfunctions.net/QueryBQTableBitstore',
+            url=function,
             headers=headers,
             payload=json.dumps(json_data),
             deadline=15
@@ -324,9 +324,20 @@ class BITStore(object):
             'table_name': 'bits_billing_byfs_bitstore_historical',
             'date_time': datetime
         }
-        fs_usage = json.loads(self.query_historical_usage_bq(data))
+        fs_usage = json.loads(self.query_historical_usage_bq(data, 'https://us-central1-broad-bitstore-app.cloudfunctions.net/QueryBQTableBitstore'))
         if not datetime:
             self.save_memcache_group('fs_usage_latest', fs_usage, 'server')
         else:
             self.save_memcache_group(datetime, fs_usage, 'server')
+        return fs_usage
+
+    def get_fs_usage_all_time(self, fs, select='*'):
+        data = {
+            'select': select,
+            'dataset': 'broad_bitstore_app',
+            'table_name': 'bits_billing_byfs_bitstore_historical',
+            'fs': fs
+        }
+        fs_usage = json.loads(self.query_historical_usage_bq(data, 'https://us-central1-broad-bitstore-app.cloudfunctions.net/QueryBQTableBitstoreHistorical'))
+
         return fs_usage

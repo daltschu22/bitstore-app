@@ -315,6 +315,7 @@ class UsageGraphs(webapp2.RequestHandler):
             new_usage['datetime'] = usage.get('datetime')
             new_usage['quota_allocation'] = convert_to_tebi(quota_allocation)
             new_usage['snapshot_byte_usage'] = convert_to_tebi(snapshot_byte_usage)
+            new_usage['dr_usage'] = convert_to_tebi(dr_byte_usage)
 
             fs_usage_list.append(new_usage)
 
@@ -326,8 +327,12 @@ class UsageGraphs(webapp2.RequestHandler):
             'fs_usage_sorted': all_time_usage_sorted_by_date
         }
 
+        jinja.filters['strptime'] = datetime.datetime.strptime
+        #jinja.filters['split_ztime'] = split('+')[0]
+        jinja.filters['strftime'] = datetime.datetime.strftime
         template = jinja.get_template('usage-graphs.html')
         body = template.render(template_values)
+
         output = render_theme(body, self.request)
         self.response.write(output)
 

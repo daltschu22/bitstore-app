@@ -1,6 +1,6 @@
 <div class="row col">
 	<div>
-		<h2>Historical usage for {{ fs_name }}:</h2>
+		<h2>Historical usage for '{{ fs_name }}' in TiB:</h2>
 	</div>
 </div>
 
@@ -26,7 +26,11 @@
           {% endfor %}
         ]);
 
-        var options = {'title':'{{ fs_name }}'};
+        var options = {
+            title:'{{ fs_name }}', 
+            hAxis: {title: 'Date', titleTextStyle: {bold: 1, fontSize: 20}},
+            vAxis: {title: 'TiB', titleTextStyle: {bold: 1, fontSize: 20}}
+        };
 
         var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
         chart.draw(data, options);

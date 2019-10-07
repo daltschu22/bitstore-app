@@ -319,7 +319,6 @@ class UsageGraphs(webapp2.RequestHandler):
 
             fs_usage_list.append(new_usage)
 
-
         all_time_usage_sorted_by_date = sorted(fs_usage_list, key=lambda x: x['datetime'])
 
         template_values = {

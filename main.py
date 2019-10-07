@@ -5,6 +5,7 @@ import json
 import os
 import webapp2
 import datetime
+import urllib
 import google.auth
 from google.appengine.api import users
 
@@ -64,6 +65,11 @@ def storage_class_list_to_dict(storage_classes):
         sc_dict[sc['id']] = sc
 
     return sc_dict
+
+def convert_to_tebi(bytes):
+    """Convert from bytes to tebibytes (Meaning 1024^4)."""
+    tebibytes_converted = round(((((float(bytes) / 1024) / 1024) / 1024) / 1024), 4)
+    return tebibytes_converted
 
 
 class AdminPage(webapp2.RequestHandler):
@@ -190,14 +196,11 @@ class Usage(webapp2.RequestHandler):
         else:
              # Or else just get the latest usage data from BQ
             latest_usages = b.get_fs_usages()
-
         # If date doesnt exist, kick person back up to latest date
         if not latest_usages:
             latest_usages = b.get_fs_usages()
 
         latest_usage_date = latest_usages[1]['datetime'].split("+")[0]
-
-        #print(latest_usages[1])
 
         # Make the list of dicts into a dict of dicts with fs value as key
         by_fs = {}
@@ -256,7 +259,77 @@ class Usage(webapp2.RequestHandler):
             'available_dates': available_dates
         }
 
+        jinja.filters['urlencode'] = urllib.quote_plus
         template = jinja.get_template('usage.html')
+        body = template.render(template_values)
+
+        output = render_theme(body, self.request)
+        self.response.write(output)
+
+class UsageGraphs(webapp2.RequestHandler):
+    """Class for FS Usage Graph page."""
+
+    def get(self):
+        """Return the main page."""
+        b = BITStore(**PARAMS)
+
+        passed_fs = self.request.get('fs')
+
+        all_time_usage = b.get_fs_usage_all_time(fs=passed_fs)
+
+        fs_usage_list = []
+        for usage in all_time_usage:
+            new_usage = {}
+            # Calculate overhead usages as a separate value
+            byte_usage_overhead = usage.get('byte_usage', 0)
+            if not byte_usage_overhead:
+                byte_usage_overhead = 0
+            byte_usage_without_overhead = usage.get('byte_usage_no_overhead', 0)
+            # If overhead DOESNT exist, set the overhead usage to 0 and set the share usage to the byte_usage value
+            if not byte_usage_without_overhead:
+                byte_usage_without_overhead = 0
+                new_usage['share_usage'] = convert_to_tebi(byte_usage_overhead)
+                overhead_usage = 0
+            # If overhead DOES exist, set the overhead usage to usage - overhead and share usage to usage_without_overhead
+            else:
+                new_usage['share_usage'] = convert_to_tebi(byte_usage_without_overhead)
+                overhead_usage = byte_usage_overhead - byte_usage_without_overhead
+
+            new_usage['overhead_usage'] = convert_to_tebi(overhead_usage)
+
+            # Calculate out the total usage value
+            dr_byte_usage = usage.get('dr_byte_usage', 0)
+            if not dr_byte_usage:
+                dr_byte_usage = 0
+            
+            snapshot_byte_usage = usage.get('snapshot_byte_usage', 0)
+            if not snapshot_byte_usage:
+                snapshot_byte_usage = 0
+            
+            quota_allocation = usage.get('quota_allocation', 0)
+            if not quota_allocation:
+                quota_allocation = 0
+
+            total_usage = byte_usage_overhead + snapshot_byte_usage
+            new_usage['total_usage'] = convert_to_tebi(total_usage)
+            new_usage['datetime'] = usage.get('datetime')
+            new_usage['quota_allocation'] = convert_to_tebi(quota_allocation)
+            new_usage['snapshot_byte_usage'] = convert_to_tebi(snapshot_byte_usage)
+            new_usage['dr_usage'] = convert_to_tebi(dr_byte_usage)
+
+            fs_usage_list.append(new_usage)
+
+        all_time_usage_sorted_by_date = sorted(fs_usage_list, key=lambda x: x['datetime'])
+
+        template_values = {
+            'fs_name': passed_fs,
+            'fs_usage_sorted': all_time_usage_sorted_by_date
+        }
+
+        jinja.filters['strptime'] = datetime.datetime.strptime
+        #jinja.filters['split_ztime'] = split('+')[0]
+        jinja.filters['strftime'] = datetime.datetime.strftime
+        template = jinja.get_template('usage-graphs.html')
         body = template.render(template_values)
 
         output = render_theme(body, self.request)
@@ -292,6 +365,7 @@ class Filesystems(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/', Usage),
+    ('/usage-graphs', UsageGraphs),
     #('/admin', AdminPage),
     ('/admin/filesystems', Filesystems),
     (r'/admin/filesystems/(\d+)', FilesystemPage),

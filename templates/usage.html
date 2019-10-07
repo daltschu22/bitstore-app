@@ -42,7 +42,7 @@
         {% for fs_key, f in by_fs.items() %}
             <tr>
                 <td><a>{{ f.server }}</a></td>
-                <td><a>{{ f.fs }}</a></td>
+                <td><a><a href="/usage-graphs?fs={{ f.fs|urlencode }}">{{ f.fs }}</a></td>
                 <td><a>{% if f.mountpoint %}{{ f.mountpoint }}{% endif %}</a></td>
                 <td><a>{% if f.quote %}{{ f.quote }}{% endif %}</a></td>
                 <td><a>{{ f.quota_allocation }}</a></td>

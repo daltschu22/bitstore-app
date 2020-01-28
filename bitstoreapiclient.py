@@ -160,7 +160,7 @@ class BITStore(object):
             # iss is the service account email.
             "iss": service_account_email,
             # target_audience is the URL of the target service.
-            "target_audience": "https://broad-bitsdb-api.appspot.com/web-client-id",
+            "target_audience": "https://broad-bitstore-api.appspot.com/web-client-id",
             # aud must be Google token endpoints URL.
             "aud": "https://www.googleapis.com/oauth2/v4/token"
         })

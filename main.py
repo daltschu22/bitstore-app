@@ -9,15 +9,16 @@ import google.auth
 from bits.appengine import AppEngine
 from bits.appengine.theme import Theme
 from bitstoreapiclient import BITStore
-# from google.cloud import firestore
 
 from flask import Flask, render_template, redirect, request, abort
 
 
+# Release: 1.5.5
+
 todays_date = datetime.datetime.today()
 
 # _, project = google.auth.default()
-project = "broad-bitstore-app"
+project = "broad-bitstore-app" # Change this later when firestore is the norm.
 
 DEBUG = False
 
